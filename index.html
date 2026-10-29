@@ -52,18 +52,17 @@
         </div>
     </div>
 
+    <script src="./config.js"></script>
     <script>
-        const apiKey = "b387de3ec6c2a70007a2b25fcef0bfaa";
         const apiURL = "https://api.openweathermap.org/data/2.5/weather?&units=metric&q=";
         const searchBox = document.querySelector("#inputBox");
         const searchButton = document.querySelector("#inputButton");
         const weatherIcon = document.querySelector("#weather");
 
         async function checkWeather(city) {
-            const response = await fetch(apiURL + city + `&appid=${apiKey}`);
+            const response = await fetch(apiURL + city + `&appid=${config.weatherAPIKey}`);
 
             if (response.status === 404) {
-                // Turn ON error, turn OFF weather
                 document.querySelector("#errorAlert").style.display = "block";
                 document.querySelector("#weatherBlock").style.display = "none";
             }
@@ -91,7 +90,6 @@
                     weatherIcon.src = "svg/mist_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg";
                 }
 
-                // Turn OFF error, turn ON weather
                 document.querySelector("#errorAlert").style.display = "none";
                 document.querySelector("#weatherBlock").style.display = "block";
             }
@@ -101,6 +99,7 @@
             checkWeather(searchBox.value);
         })
     </script>
+    
 
 </body>
 
