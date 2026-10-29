@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./src/output.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Parkinsans:wght@300..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+    <title>Weather</title>
+</head>
+
+<body class="m-0 p-0 font-Poppins box-border bg-[#B1ADA1]">
+    <div
+        class="w-[40%] mw-[470px] m-[100px] mx-auto mb-0 bg-[#a35b43] text-white rounded-lg pt-[30px] pb-[30px] pr-[20px] pl-[20px] text-center ">
+        <div class="w-full flex items-center justify-between ">
+            <input id="inputBox" type="text" placeholder="Enter city name: " spellcheck="false"
+                class=" border-none outline-none text-black bg-[#ebfffc] pt-[10px] pb-[10px] pr-[25px] pl-[25px] h-[60px] rounded-[30px] flex-1 mr-[16px] text-[18px]">
+            <button id="inputButton" class=""> <img src="./svg/search_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg"
+                    alt="search icon"
+                    class="stroke-black border-none outline-none bg-[#ebfffc] rounded-[50%] size-15 cursor-pointer"></button>
+        </div>
+        <div class="hidden" id="errorAlert">
+            <p class="text-white pt-[5px] ">Invalid city name</p>
+        </div>
+        <div class="hidden" id="weatherBlock">
+            <img src="./svg/rainy_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg" alt="rainy class"
+                class="w-[130px] mt-[30px] mx-auto" id="weather">
+            <h1 id="temp" class="text-[66px] font-medium ">22°c</h1>
+            <h2 id="city" class="text-[30px] font-normal mt-[-10px]">New York</h2>
+            <div class="flex items-center justify-between pt-[0px] pb-[0px] pr-[20px] pl-[20px] mt-[50px]">
+                <div class="flex items-center text-left">
+                    <img src="./svg/humidity_mid_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg" alt="humidity"
+                        class="w-[60px] mr-[10px]">
+                    <div class="">
+                        <p id="humidity" class="text-[28px] mt-[-6px] "> 50%</p>
+                        <p class="">Humidity</p>
+                    </div>
+                </div>
+                <div class="flex items-center text-left">
+                    <img src="./svg/air_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg" alt="wind"
+                        class="w-[60px] mr-[10px]">
+                    <div class="">
+                        <p id="wind" class="text-[28px] mt-[-6px]"> 15 km/h</p>
+                        <p class="">Wind Speed</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const apiKey = "b387de3ec6c2a70007a2b25fcef0bfaa";
+        const apiURL = "https://api.openweathermap.org/data/2.5/weather?&units=metric&q=";
+        const searchBox = document.querySelector("#inputBox");
+        const searchButton = document.querySelector("#inputButton");
+        const weatherIcon = document.querySelector("#weather");
+
+        async function checkWeather(city) {
+            const response = await fetch(apiURL + city + `&appid=${apiKey}`);
+
+            if (response.status === 404) {
+                // Turn ON error, turn OFF weather
+                document.querySelector("#errorAlert").style.display = "block";
+                document.querySelector("#weatherBlock").style.display = "none";
+            }
+            else {
+                let data = await response.json();
+
+                document.querySelector("#city").innerHTML = data.name;
+                document.querySelector("#temp").innerHTML = Math.round(data.main.temp) + "°c";
+                document.querySelector("#humidity").innerHTML = data.main.humidity + "%";
+                document.querySelector("#wind").innerHTML = data.wind.speed + " km/h";
+
+                if (data.weather[0].main == "Clouds") {
+                    weatherIcon.src = "svg/partly_cloudy_day_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg";
+                }
+                else if (data.weather[0].main == "Clear") {
+                    weatherIcon.src = "svg/clear_day_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg";
+                }
+                else if (data.weather[0].main == "Rain") {
+                    weatherIcon.src = "svg/rainy_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg";
+                }
+                else if (data.weather[0].main == "Drizzle") {
+                    weatherIcon.src = "svg/rainy_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg";
+                }
+                else if (data.weather[0].main == "Mist") {
+                    weatherIcon.src = "svg/mist_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg";
+                }
+
+                // Turn OFF error, turn ON weather
+                document.querySelector("#errorAlert").style.display = "none";
+                document.querySelector("#weatherBlock").style.display = "block";
+            }
+        }
+
+        searchButton.addEventListener("click", () => {
+            checkWeather(searchBox.value);
+        })
+    </script>
+
+</body>
+
+</html>
